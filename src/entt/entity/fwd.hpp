@@ -11,8 +11,12 @@ namespace entt {
 template <typename>
 class basic_registry;
 
+template <typename>
+struct basic_actor;
+
 using entity = ENTT_ENTITY_TYPE;
 using registry = basic_registry<entity>;
+using actor = basic_actor<entity>;
 
 
 }
