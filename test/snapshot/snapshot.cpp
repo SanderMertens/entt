@@ -126,7 +126,7 @@ TEST(Snapshot, Continuous) {
     }
 
     cereal::JSONInputArchive input{storage};
-    entt::continuous_loader<entt::entity> loader{destination};
+    entt::continuous_loader loader{destination};
     loader.entities(input)
             .component<position, relationship>(input, &relationship::parent)
             .component<timer>(input);

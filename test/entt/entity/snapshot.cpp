@@ -241,7 +241,7 @@ TEST(Snapshot, Continuous) {
     entt::registry src;
     entt::registry dst;
 
-    entt::continuous_loader<entt::entity> loader{dst};
+    entt::continuous_loader loader{dst};
 
     std::vector<entt::entity> entities;
     entt::entity entity;
@@ -430,7 +430,7 @@ TEST(Snapshot, MoreOnShrink) {
     entt::registry src;
     entt::registry dst;
 
-    entt::continuous_loader<entt::entity> loader{dst};
+    entt::continuous_loader loader{dst};
 
     using storage_type = std::tuple<
         std::queue<entt::entity>,
@@ -456,7 +456,7 @@ TEST(Snapshot, SyncDataMembers) {
     entt::registry src;
     entt::registry dst;
 
-    entt::continuous_loader<entt::entity> loader{dst};
+    entt::continuous_loader loader{dst};
 
     using storage_type = std::tuple<
         std::queue<entt::entity>,

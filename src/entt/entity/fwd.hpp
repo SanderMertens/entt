@@ -23,10 +23,22 @@ struct basic_actor;
 template<typename>
 class basic_prototype;
 
+template<typename>
+class basic_snapshot;
+
+template<typename>
+class basic_snapshot_loader;
+
+template<typename>
+class basic_continuous_loader;
+
 using entity = ENTT_ENTITY_TYPE;
 using registry = basic_registry<entity>;
 using actor = basic_actor<entity>;
 using prototype = basic_prototype<entity>;
+using snapshot = basic_snapshot<entity>;
+using snapshot_loader = basic_snapshot_loader<entity>;
+using continuous_loader = basic_continuous_loader<entity>;
 
 template<typename... Types>
 using view = basic_view<entity, Types...>;

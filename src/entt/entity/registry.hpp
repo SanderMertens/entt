@@ -1492,7 +1492,7 @@ public:
      *
      * @return A temporary object to use to take snasphosts.
      */
-    entt::snapshot<Entity> snapshot() const ENTT_NOEXCEPT {
+    entt::basic_snapshot<Entity> snapshot() const ENTT_NOEXCEPT {
         using follow_fn_type = entity_type(const basic_registry &, const entity_type);
         const entity_type seed = available ? (next | (entities[next] & (traits_type::version_mask << traits_type::entity_shift))) : next;
 
@@ -1521,7 +1521,7 @@ public:
      *
      * @return A temporary object to use to load snasphosts.
      */
-    snapshot_loader<Entity> loader() ENTT_NOEXCEPT {
+    basic_snapshot_loader<Entity> loader() ENTT_NOEXCEPT {
         using assure_fn_type = void(basic_registry &, const entity_type, const bool);
 
         assure_fn_type *assure = [](basic_registry &registry, const entity_type entity, const bool destroyed) {

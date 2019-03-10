@@ -35,13 +35,13 @@ class basic_registry;
  * @tparam Entity A valid entity type (see entt_traits for more details).
  */
 template<typename Entity>
-class snapshot {
+class basic_snapshot {
     /*! @brief A registry is allowed to create snapshots. */
     friend class basic_registry<Entity>;
 
     using follow_fn_type = Entity(const basic_registry<Entity> &, const Entity);
 
-    snapshot(const basic_registry<Entity> &reg, Entity seed, follow_fn_type *follow) ENTT_NOEXCEPT
+    basic_snapshot(const basic_registry<Entity> &reg, Entity seed, follow_fn_type *follow) ENTT_NOEXCEPT
         : reg{reg},
           seed{seed},
           follow{follow}
@@ -75,10 +75,10 @@ class snapshot {
 
 public:
     /*! @brief Default move constructor. */
-    snapshot(snapshot &&) = default;
+    basic_snapshot(basic_snapshot &&) = default;
 
     /*! @brief Default move assignment operator. @return This snapshot. */
-    snapshot & operator=(snapshot &&) = default;
+    basic_snapshot & operator=(basic_snapshot &&) = default;
 
     /**
      * @brief Puts aside all the entities that are still in use.
@@ -91,7 +91,7 @@ public:
      * @return An object of this type to continue creating the snapshot.
      */
     template<typename Archive>
-    const snapshot & entities(Archive &archive) const {
+    const basic_snapshot & entities(Archive &archive) const {
         archive(static_cast<Entity>(reg.alive()));
         reg.each([&archive](const auto entity) { archive(entity); });
         return *this;
@@ -108,7 +108,7 @@ public:
      * @return An object of this type to continue creating the snapshot.
      */
     template<typename Archive>
-    const snapshot & destroyed(Archive &archive) const {
+    const basic_snapshot & destroyed(Archive &archive) const {
         auto size = reg.size() - reg.alive();
         archive(static_cast<Entity>(size));
 
@@ -137,7 +137,7 @@ public:
      * @return An object of this type to continue creating the snapshot.
      */
     template<typename... Component, typename Archive>
-    const snapshot & component(Archive &archive) const {
+    const basic_snapshot & component(Archive &archive) const {
         if constexpr(sizeof...(Component) == 1) {
             const auto sz = reg.template size<Component...>();
             const auto *entities = reg.template data<Component...>();
@@ -170,7 +170,7 @@ public:
      * @return An object of this type to continue creating the snapshot.
      */
     template<typename... Component, typename Archive, typename It>
-    const snapshot & component(Archive &archive, It first, It last) const {
+    const basic_snapshot & component(Archive &archive, It first, It last) const {
         component<Component...>(archive, first, last, std::make_index_sequence<sizeof...(Component)>{});
         return *this;
     }
@@ -193,13 +193,13 @@ private:
  * @tparam Entity A valid entity type (see entt_traits for more details).
  */
 template<typename Entity>
-class snapshot_loader {
+class basic_snapshot_loader {
     /*! @brief A registry is allowed to create snapshot loaders. */
     friend class basic_registry<Entity>;
 
     using force_fn_type = void(basic_registry<Entity> &, const Entity, const bool);
 
-    snapshot_loader(basic_registry<Entity> &reg, force_fn_type *force) ENTT_NOEXCEPT
+    basic_snapshot_loader(basic_registry<Entity> &reg, force_fn_type *force) ENTT_NOEXCEPT
         : reg{reg},
           force{force}
     {
@@ -236,10 +236,10 @@ class snapshot_loader {
 
 public:
     /*! @brief Default move constructor. */
-    snapshot_loader(snapshot_loader &&) = default;
+    basic_snapshot_loader(basic_snapshot_loader &&) = default;
 
     /*! @brief Default move assignment operator. @return This loader. */
-    snapshot_loader & operator=(snapshot_loader &&) = default;
+    basic_snapshot_loader & operator=(basic_snapshot_loader &&) = default;
 
     /**
      * @brief Restores entities that were in use during serialization.
@@ -252,7 +252,7 @@ public:
      * @return A valid loader to continue restoring data.
      */
     template<typename Archive>
-    const snapshot_loader & entities(Archive &archive) const {
+    const basic_snapshot_loader & entities(Archive &archive) const {
         static constexpr auto destroyed = false;
         assure(archive, destroyed);
         return *this;
@@ -269,7 +269,7 @@ public:
      * @return A valid loader to continue restoring data.
      */
     template<typename Archive>
-    const snapshot_loader & destroyed(Archive &archive) const {
+    const basic_snapshot_loader & destroyed(Archive &archive) const {
         static constexpr auto destroyed = true;
         assure(archive, destroyed);
         return *this;
@@ -289,7 +289,7 @@ public:
      * @return A valid loader to continue restoring data.
      */
     template<typename... Component, typename Archive>
-    const snapshot_loader & component(Archive &archive) const {
+    const basic_snapshot_loader & component(Archive &archive) const {
         (assign<Component>(archive), ...);
         return *this;
     }
@@ -304,7 +304,7 @@ public:
      *
      * @return A valid loader to continue restoring data.
      */
-    const snapshot_loader & orphans() const {
+    const basic_snapshot_loader & orphans() const {
         reg.orphans([this](const auto entity) {
             reg.destroy(entity);
         });
@@ -335,7 +335,7 @@ private:
  * @tparam Entity A valid entity type (see entt_traits for more details).
  */
 template<typename Entity>
-class continuous_loader {
+class basic_continuous_loader {
     using traits_type = entt_traits<Entity>;
 
     void destroy(Entity entity) {
@@ -380,7 +380,7 @@ class continuous_loader {
     }
 
     template<typename Archive>
-    void assure(Archive &archive, void(continuous_loader:: *member)(Entity)) {
+    void assure(Archive &archive, void(basic_continuous_loader:: *member)(Entity)) {
         Entity length{};
         archive(length);
 
@@ -425,15 +425,15 @@ public:
      * @brief Constructs a loader that is bound to a given registry.
      * @param reg A valid reference to a registry.
      */
-    continuous_loader(basic_registry<entity_type> &reg) ENTT_NOEXCEPT
+    basic_continuous_loader(basic_registry<entity_type> &reg) ENTT_NOEXCEPT
         : reg{reg}
     {}
 
     /*! @brief Default move constructor. */
-    continuous_loader(continuous_loader &&) = default;
+    basic_continuous_loader(basic_continuous_loader &&) = default;
 
     /*! @brief Default move assignment operator. @return This loader. */
-    continuous_loader & operator=(continuous_loader &&) = default;
+    basic_continuous_loader & operator=(basic_continuous_loader &&) = default;
 
     /**
      * @brief Restores entities that were in use during serialization.
@@ -446,8 +446,8 @@ public:
      * @return A non-const reference to this loader.
      */
     template<typename Archive>
-    continuous_loader & entities(Archive &archive) {
-        assure(archive, &continuous_loader::restore);
+    basic_continuous_loader & entities(Archive &archive) {
+        assure(archive, &basic_continuous_loader::restore);
         return *this;
     }
 
@@ -462,8 +462,8 @@ public:
      * @return A non-const reference to this loader.
      */
     template<typename Archive>
-    continuous_loader & destroyed(Archive &archive) {
-        assure(archive, &continuous_loader::destroy);
+    basic_continuous_loader & destroyed(Archive &archive) {
+        assure(archive, &basic_continuous_loader::destroy);
         return *this;
     }
 
@@ -487,7 +487,7 @@ public:
      * @return A non-const reference to this loader.
      */
     template<typename... Component, typename Archive, typename... Type, typename... Member>
-    continuous_loader & component(Archive &archive, Member Type:: *... member) {
+    basic_continuous_loader & component(Archive &archive, Member Type:: *... member) {
         auto apply = [this](const auto entity, const auto &component) {
             reg.template assign_or_replace<std::decay_t<decltype(component)>>(entity, component);
         };
@@ -505,7 +505,7 @@ public:
      *
      * @return A non-const reference to this loader.
      */
-    continuous_loader & shrink() {
+    basic_continuous_loader & shrink() {
         auto it = remloc.begin();
 
         while(it != remloc.cend()) {
@@ -537,7 +537,7 @@ public:
      *
      * @return A non-const reference to this loader.
      */
-    continuous_loader & orphans() {
+    basic_continuous_loader & orphans() {
         reg.orphans([this](const auto entity) {
             reg.destroy(entity);
         });
