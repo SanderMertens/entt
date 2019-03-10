@@ -21,7 +21,7 @@ namespace entt {
  * @brief Forward declaration of the registry class.
  */
 template<typename>
-class registry;
+class basic_registry;
 
 
 /**
@@ -37,11 +37,11 @@ class registry;
 template<typename Entity>
 class snapshot {
     /*! @brief A registry is allowed to create snapshots. */
-    friend class registry<Entity>;
+    friend class basic_registry<Entity>;
 
-    using follow_fn_type = Entity(const registry<Entity> &, const Entity);
+    using follow_fn_type = Entity(const basic_registry<Entity> &, const Entity);
 
-    snapshot(const registry<Entity> &reg, Entity seed, follow_fn_type *follow) ENTT_NOEXCEPT
+    snapshot(const basic_registry<Entity> &reg, Entity seed, follow_fn_type *follow) ENTT_NOEXCEPT
         : reg{reg},
           seed{seed},
           follow{follow}
@@ -176,7 +176,7 @@ public:
     }
 
 private:
-    const registry<Entity> &reg;
+    const basic_registry<Entity> &reg;
     const Entity seed;
     follow_fn_type *follow;
 };
@@ -195,11 +195,11 @@ private:
 template<typename Entity>
 class snapshot_loader {
     /*! @brief A registry is allowed to create snapshot loaders. */
-    friend class registry<Entity>;
+    friend class basic_registry<Entity>;
 
-    using force_fn_type = void(registry<Entity> &, const Entity, const bool);
+    using force_fn_type = void(basic_registry<Entity> &, const Entity, const bool);
 
-    snapshot_loader(registry<Entity> &reg, force_fn_type *force) ENTT_NOEXCEPT
+    snapshot_loader(basic_registry<Entity> &reg, force_fn_type *force) ENTT_NOEXCEPT
         : reg{reg},
           force{force}
     {
@@ -313,7 +313,7 @@ public:
     }
 
 private:
-    registry<Entity> &reg;
+    basic_registry<Entity> &reg;
     force_fn_type *force;
 };
 
@@ -425,7 +425,7 @@ public:
      * @brief Constructs a loader that is bound to a given registry.
      * @param reg A valid reference to a registry.
      */
-    continuous_loader(registry<entity_type> &reg) ENTT_NOEXCEPT
+    continuous_loader(basic_registry<entity_type> &reg) ENTT_NOEXCEPT
         : reg{reg}
     {}
 
@@ -572,7 +572,7 @@ public:
 
 private:
     std::unordered_map<Entity, std::pair<Entity, bool>> remloc;
-    registry<Entity> &reg;
+    basic_registry<Entity> &reg;
 };
 
 

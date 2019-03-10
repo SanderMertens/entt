@@ -18,7 +18,7 @@ namespace entt {
  * @brief Forward declaration of the registry class.
  */
 template<typename>
-class registry;
+class basic_registry;
 
 
 /**
@@ -89,7 +89,7 @@ class group<Entity, get_t<Get...>> {
     static_assert(sizeof...(Get) > 0);
 
     /*! @brief A registry is allowed to create groups. */
-    friend class registry<Entity>;
+    friend class basic_registry<Entity>;
 
     template<typename Component>
     using pool_type = std::conditional_t<std::is_const_v<Component>, const sparse_set<Entity, std::remove_const_t<Component>>, sparse_set<Entity, Component>>;
@@ -339,7 +339,7 @@ class group<Entity, get_t<Get...>, Owned...> {
     static_assert(sizeof...(Get) + sizeof...(Owned) > 0);
 
     /*! @brief A registry is allowed to create groups. */
-    friend class registry<Entity>;
+    friend class basic_registry<Entity>;
 
     template<typename Component>
     using pool_type = std::conditional_t<std::is_const_v<Component>, const sparse_set<Entity, std::remove_const_t<Component>>, sparse_set<Entity, Component>>;
@@ -348,7 +348,7 @@ class group<Entity, get_t<Get...>, Owned...> {
     using component_iterator_type = decltype(std::declval<pool_type<Component>>().begin());
 
     // we could use pool_type<Type> *..., but vs complains about it and refuses to compile for unknown reasons (likely a bug)
-    group(const typename registry<Entity>::size_type *length, sparse_set<Entity, std::remove_const_t<Owned>> *... owned, sparse_set<Entity, std::remove_const_t<Get>> *... others) ENTT_NOEXCEPT
+    group(const typename basic_registry<Entity>::size_type *length, sparse_set<Entity, std::remove_const_t<Owned>> *... owned, sparse_set<Entity, std::remove_const_t<Get>> *... others) ENTT_NOEXCEPT
         : length{length},
           pools{owned..., others...}
     {}
@@ -551,7 +551,7 @@ public:
     }
 
 private:
-    const typename registry<Entity>::size_type *length;
+    const typename basic_registry<Entity>::size_type *length;
     const std::tuple<pool_type<Owned> *..., pool_type<Get> *...> pools;
 };
 

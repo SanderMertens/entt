@@ -24,7 +24,7 @@ namespace entt {
 template<typename Entity>
 struct actor {
     /*! @brief Type of registry used internally. */
-    using registry_type = registry<Entity>;
+    using registry_type = basic_registry<Entity>;
     /*! @brief Underlying entity identifier. */
     using entity_type = Entity;
 

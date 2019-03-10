@@ -23,7 +23,7 @@ namespace entt {
  * @brief Forward declaration of the registry class.
  */
 template<typename>
-class registry;
+class basic_registry;
 
 
 /**
@@ -67,7 +67,7 @@ class view {
     static_assert(sizeof...(Component) > 1);
 
     /*! @brief A registry is allowed to create views. */
-    friend class registry<Entity>;
+    friend class basic_registry<Entity>;
 
     template<typename Comp>
     using pool_type = std::conditional_t<std::is_const_v<Comp>, const sparse_set<Entity, std::remove_const_t<Comp>>, sparse_set<Entity, Comp>>;
@@ -422,7 +422,7 @@ private:
 template<typename Entity, typename Component>
 class view<Entity, Component> {
     /*! @brief A registry is allowed to create views. */
-    friend class registry<Entity>;
+    friend class basic_registry<Entity>;
 
     using pool_type = std::conditional_t<std::is_const_v<Component>, const sparse_set<Entity, std::remove_const_t<Component>>, sparse_set<Entity, Component>>;
 
@@ -652,7 +652,7 @@ private:
 template<typename Entity>
 class runtime_view {
     /*! @brief A registry is allowed to create views. */
-    friend class registry<Entity>;
+    friend class basic_registry<Entity>;
 
     using underlying_iterator_type = typename sparse_set<Entity>::iterator_type;
     using extent_type = typename sparse_set<Entity>::size_type;
