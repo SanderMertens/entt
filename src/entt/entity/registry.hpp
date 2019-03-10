@@ -1237,13 +1237,13 @@ public:
      * @return A newly created view.
      */
     template<typename... Component>
-    entt::view<Entity, Component...> view() {
+    entt::basic_view<Entity, Component...> view() {
         return { assure<Component>()... };
     }
 
     /*! @copydoc view */
     template<typename... Component>
-    inline entt::view<Entity, Component...> view() const {
+    inline entt::basic_view<Entity, Component...> view() const {
         static_assert(std::conjunction_v<std::is_const<Component>...>);
         return const_cast<basic_registry *>(this)->view<Component...>();
     }
@@ -1414,7 +1414,7 @@ public:
      * @return A newly created runtime view.
      */
     template<typename It>
-    entt::runtime_view<Entity> runtime_view(It first, It last) const {
+    entt::basic_runtime_view<Entity> runtime_view(It first, It last) const {
         static_assert(std::is_convertible_v<typename std::iterator_traits<It>::value_type, component_type>);
         std::vector<const sparse_set<Entity> *> set(std::distance(first, last));
 

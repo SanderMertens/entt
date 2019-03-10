@@ -33,7 +33,7 @@ struct as_view {
      * @return A newly created view.
      */
     template<typename... Component>
-    inline operator entt::view<Entity, Component...>() const {
+    inline operator entt::basic_view<Entity, Component...>() const {
         return reg.template view<Component...>();
     }
 

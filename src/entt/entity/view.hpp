@@ -63,7 +63,7 @@ class basic_registry;
  * @tparam Component Types of components iterated by the view.
  */
 template<typename Entity, typename... Component>
-class view {
+class basic_view {
     static_assert(sizeof...(Component) > 1);
 
     /*! @brief A registry is allowed to create views. */
@@ -80,7 +80,7 @@ class view {
     using traits_type = entt_traits<Entity>;
 
     class iterator {
-        friend class view<Entity, Component...>;
+        friend class basic_view<Entity, Component...>;
 
         using extent_type = typename sparse_set<Entity>::size_type;
 
@@ -151,7 +151,7 @@ class view {
     };
 
     // we could use pool_type<Component> *..., but vs complains about it and refuses to compile for unknown reasons (likely a bug)
-    view(sparse_set<Entity, std::remove_const_t<Component>> *... pools) ENTT_NOEXCEPT
+    basic_view(sparse_set<Entity, std::remove_const_t<Component>> *... pools) ENTT_NOEXCEPT
         : pools{pools...}
     {}
 
@@ -420,13 +420,13 @@ private:
  * @tparam Component Type of component iterated by the view.
  */
 template<typename Entity, typename Component>
-class view<Entity, Component> {
+class basic_view<Entity, Component> {
     /*! @brief A registry is allowed to create views. */
     friend class basic_registry<Entity>;
 
     using pool_type = std::conditional_t<std::is_const_v<Component>, const sparse_set<Entity, std::remove_const_t<Component>>, sparse_set<Entity, Component>>;
 
-    view(pool_type *pool) ENTT_NOEXCEPT
+    basic_view(pool_type *pool) ENTT_NOEXCEPT
         : pool{pool}
     {}
 
@@ -650,7 +650,7 @@ private:
  * @tparam Entity A valid entity type (see entt_traits for more details).
  */
 template<typename Entity>
-class runtime_view {
+class basic_runtime_view {
     /*! @brief A registry is allowed to create views. */
     friend class basic_registry<Entity>;
 
@@ -659,7 +659,7 @@ class runtime_view {
     using traits_type = entt_traits<Entity>;
 
     class iterator {
-        friend class runtime_view<Entity>;
+        friend class basic_runtime_view<Entity>;
 
         iterator(underlying_iterator_type begin, underlying_iterator_type end, const sparse_set<Entity> * const *first, const sparse_set<Entity> * const *last, extent_type extent) ENTT_NOEXCEPT
             : begin{begin},
@@ -724,7 +724,7 @@ class runtime_view {
         extent_type extent;
     };
 
-    runtime_view(std::vector<const sparse_set<Entity> *> others) ENTT_NOEXCEPT
+    basic_runtime_view(std::vector<const sparse_set<Entity> *> others) ENTT_NOEXCEPT
         : pools{std::move(others)}
     {
         const auto it = std::min_element(pools.begin(), pools.end(), [](const auto *lhs, const auto *rhs) {

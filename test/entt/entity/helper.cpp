@@ -8,9 +8,9 @@ TEST(Helper, AsView) {
     entt::registry registry;
     const entt::registry cregistry;
 
-    ([](entt::view<entt::entity, int, char>) {})(entt::as_view{registry});
-    ([](entt::view<entt::entity, const int, char>) {})(entt::as_view{registry});
-    ([](entt::view<entt::entity, const double>) {})(entt::as_view{cregistry});
+    ([](entt::view<int, char>) {})(entt::as_view{registry});
+    ([](entt::view<const int, char>) {})(entt::as_view{registry});
+    ([](entt::view<const double>) {})(entt::as_view{cregistry});
 }
 
 TEST(Helper, AsGroup) {
