@@ -6,9 +6,9 @@
 #include <utility>
 #include <type_traits>
 #include "../config/config.h"
+#include "registry.hpp"
 #include "entity.hpp"
 #include "fwd.hpp"
-#include "registry.hpp"
 
 
 namespace entt {

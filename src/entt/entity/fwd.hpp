@@ -17,12 +17,17 @@ struct basic_actor;
 template<typename...>
 class basic_group;
 
+template<typename>
+class basic_prototype;
+
 using entity = ENTT_ENTITY_TYPE;
 using registry = basic_registry<entity>;
 using actor = basic_actor<entity>;
 
 template<typename... Types>
 using group = basic_group<entity, Types...>;
+
+using prototype = basic_prototype<entity>;
 
 }
 

@@ -9,6 +9,7 @@
 #include "../config/config.h"
 #include "../core/type_traits.hpp"
 #include "sparse_set.hpp"
+#include "fwd.hpp"
 
 
 namespace entt {

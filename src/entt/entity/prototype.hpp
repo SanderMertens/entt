@@ -10,6 +10,7 @@
 #include "../config/config.h"
 #include "registry.hpp"
 #include "entity.hpp"
+#include "fwd.hpp"
 
 
 namespace entt {
@@ -37,8 +38,8 @@ namespace entt {
  * @tparam Entity A valid entity type (see entt_traits for more details).
  */
 template<typename Entity>
-class prototype {
-    using basic_fn_type = void(const prototype &, basic_registry<Entity> &, const Entity);
+class basic_prototype {
+    using basic_fn_type = void(const basic_prototype &, basic_registry<Entity> &, const Entity);
     using component_type = typename basic_registry<Entity>::component_type;
 
     template<typename Component>
@@ -67,7 +68,7 @@ public:
      * @brief Constructs a prototype that is bound to a given registry.
      * @param reg A valid reference to a registry.
      */
-    prototype(registry_type &reg)
+    basic_prototype(registry_type &reg)
         : reg{&reg},
           entity{reg.create()}
     {}
@@ -75,7 +76,7 @@ public:
     /**
      * @brief Releases all its resources.
      */
-    ~prototype() {
+    ~basic_prototype() {
         release();
     }
 
@@ -88,7 +89,7 @@ public:
      *
      * @param other The instance to move from.
      */
-    prototype(prototype &&other)
+    basic_prototype(basic_prototype &&other)
         : handlers{std::move(other.handlers)},
           reg{other.reg},
           entity{other.entity}
@@ -106,7 +107,7 @@ public:
      * @param other The instance to move from.
      * @return This prototype.
      */
-    prototype & operator=(prototype &&other) {
+    basic_prototype & operator=(basic_prototype &&other) {
         if(this != &other) {
             auto tmp{std::move(other)};
             handlers.swap(tmp.handlers);
@@ -126,12 +127,12 @@ public:
      */
     template<typename Component, typename... Args>
     Component & set(Args &&... args) {
-        basic_fn_type *assign_or_replace = [](const prototype &prototype, registry_type &other, const Entity dst) {
+        basic_fn_type *assign_or_replace = [](const basic_prototype &prototype, registry_type &other, const Entity dst) {
             const auto &wrapper = prototype.reg->template get<component_wrapper<Component>>(prototype.entity);
             other.template assign_or_replace<Component>(dst, wrapper.component);
         };
 
-        basic_fn_type *assign = [](const prototype &prototype, registry_type &other, const Entity dst) {
+        basic_fn_type *assign = [](const basic_prototype &prototype, registry_type &other, const Entity dst) {
             if(!other.template has<Component>(dst)) {
                 const auto &wrapper = prototype.reg->template get<component_wrapper<Component>>(prototype.entity);
                 other.template assign<Component>(dst, wrapper.component);
