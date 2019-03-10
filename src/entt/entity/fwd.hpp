@@ -14,10 +14,15 @@ class basic_registry;
 template <typename>
 struct basic_actor;
 
+template<typename...>
+class basic_group;
+
 using entity = ENTT_ENTITY_TYPE;
 using registry = basic_registry<entity>;
 using actor = basic_actor<entity>;
 
+template<typename... Types>
+using group = basic_group<entity, Types...>;
 
 }
 

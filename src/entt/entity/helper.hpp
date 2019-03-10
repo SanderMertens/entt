@@ -86,7 +86,7 @@ struct as_group {
      * @return A newly created group.
      */
     template<typename... Owned>
-    inline operator entt::group<Entity, get_t<>, Owned...>() const {
+    inline operator entt::basic_group<Entity, get_t<>, Owned...>() const {
         return reg.template group<Owned...>();
     }
 

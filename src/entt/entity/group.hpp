@@ -44,7 +44,7 @@ constexpr get_t<Type...> get{};
  * compile-time error, but for a few reasonable cases.
  */
 template<typename...>
-class group;
+class basic_group;
 
 
 /**
@@ -85,7 +85,7 @@ class group;
  * @tparam Get Types of components iterated by the group.
  */
 template<typename Entity, typename... Get>
-class group<Entity, get_t<Get...>> {
+class basic_group<Entity, get_t<Get...>> {
     static_assert(sizeof...(Get) > 0);
 
     /*! @brief A registry is allowed to create groups. */
@@ -95,7 +95,7 @@ class group<Entity, get_t<Get...>> {
     using pool_type = std::conditional_t<std::is_const_v<Component>, const sparse_set<Entity, std::remove_const_t<Component>>, sparse_set<Entity, Component>>;
 
     // we could use pool_type<Get> *..., but vs complains about it and refuses to compile for unknown reasons (likely a bug)
-    group(sparse_set<Entity> *handler, sparse_set<Entity, std::remove_const_t<Get>> *... pools) ENTT_NOEXCEPT
+    basic_group(sparse_set<Entity> *handler, sparse_set<Entity, std::remove_const_t<Get>> *... pools) ENTT_NOEXCEPT
         : handler{handler},
           pools{pools...}
     {}
@@ -335,7 +335,7 @@ private:
  * @tparam Owned Types of components owned by the group.
  */
 template<typename Entity, typename... Get, typename... Owned>
-class group<Entity, get_t<Get...>, Owned...> {
+class basic_group<Entity, get_t<Get...>, Owned...> {
     static_assert(sizeof...(Get) + sizeof...(Owned) > 0);
 
     /*! @brief A registry is allowed to create groups. */
@@ -348,7 +348,7 @@ class group<Entity, get_t<Get...>, Owned...> {
     using component_iterator_type = decltype(std::declval<pool_type<Component>>().begin());
 
     // we could use pool_type<Type> *..., but vs complains about it and refuses to compile for unknown reasons (likely a bug)
-    group(const typename basic_registry<Entity>::size_type *length, sparse_set<Entity, std::remove_const_t<Owned>> *... owned, sparse_set<Entity, std::remove_const_t<Get>> *... others) ENTT_NOEXCEPT
+    basic_group(const typename basic_registry<Entity>::size_type *length, sparse_set<Entity, std::remove_const_t<Owned>> *... owned, sparse_set<Entity, std::remove_const_t<Get>> *... others) ENTT_NOEXCEPT
         : length{length},
           pools{owned..., others...}
     {}

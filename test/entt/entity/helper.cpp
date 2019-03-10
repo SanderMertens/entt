@@ -17,9 +17,9 @@ TEST(Helper, AsGroup) {
     entt::registry registry;
     const entt::registry cregistry;
 
-    ([](entt::group<entt::entity, entt::get_t<>, double, float>) {})(entt::as_group{registry});
-    ([](entt::group<entt::entity, entt::get_t<>, const double, float>) {})(entt::as_group{registry});
-    ([](entt::group<entt::entity, entt::get_t<>, const double, const float>) {})(entt::as_group{cregistry});
+    ([](entt::group<entt::get_t<>, double, float>) {})(entt::as_group{registry});
+    ([](entt::group<entt::get_t<>, const double, float>) {})(entt::as_group{registry});
+    ([](entt::group<entt::get_t<>, const double, const float>) {})(entt::as_group{cregistry});
 }
 
 TEST(Helper, Dependency) {
