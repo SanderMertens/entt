@@ -14,16 +14,10 @@
 #include "../core/type_traits.hpp"
 #include "entt_traits.hpp"
 #include "sparse_set.hpp"
+#include "fwd.hpp"
 
 
 namespace entt {
-
-
-/**
- * @brief Forward declaration of the registry class.
- */
-template<typename>
-class basic_registry;
 
 
 /**

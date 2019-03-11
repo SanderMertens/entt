@@ -16,13 +16,6 @@ namespace entt {
 
 
 /**
- * @brief Forward declaration of the registry class.
- */
-template<typename>
-class basic_registry;
-
-
-/**
  * @brief Alias for lists of observed components.
  * @tparam Type List of types.
  */
@@ -83,7 +76,7 @@ class basic_group;
  * In any other case, attempting to use a group results in undefined behavior.
  *
  * @tparam Entity A valid entity type (see entt_traits for more details).
- * @tparam Get Types of components iterated by the group.
+ * @tparam Get Types of components observed by the group.
  */
 template<typename Entity, typename... Get>
 class basic_group<Entity, get_t<Get...>> {

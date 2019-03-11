@@ -12,16 +12,10 @@
 #include "../config/config.h"
 #include "entt_traits.hpp"
 #include "entity.hpp"
+#include "fwd.hpp"
 
 
 namespace entt {
-
-
-/**
- * @brief Forward declaration of the registry class.
- */
-template<typename>
-class basic_registry;
 
 
 /**
